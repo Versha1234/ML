@@ -1,0 +1,42 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import sklearn
+
+from sklearn.linear_model import LinearRegression
+
+from sklearn.datasets import load_boston     #importing boston housing dataset from sklearn
+boston=load_boston()
+boston
+
+bos=pd.DataFrame(boston.data)
+bos
+bos.columns=boston.feature_names    #assigning feature_names to columns
+bos
+ 
+bos['Price']=boston.target        #adding a price column in bos dataset
+bos
+
+x=bos.drop('Price',axis=1)
+y=bos['Price']
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.3,random_state=5)
+x_train
+lm=LinearRegression()
+lm.fit(x_train,y_train)
+
+y_predict_train=lm.predict(x_train)
+y_predict_train
+y_predict_test=lm.predict(x_test)
+y_predict_test
+
+df=pd.DataFrame(y_predict_test,y_test)
+df
+
+from sklearn.metrics import mean_squared_error     #calculating the mean square error
+mse=mean_squared_error(y_test,y_predict_test)
+mse
+ 
+plt.scatter(y_test,y_predict_test,c="red",marker='*')    #visualization
+plt.show()
