@@ -1,0 +1,49 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import sklearn
+
+from sklearn.datasets import load_breast_cancer
+cancer=load_breast_cancer()
+print(cancer.feature_names)
+print(cancer.target_names)
+
+df=pd.DataFrame(cancer.data,columns=cancer.feature_names)
+df
+
+df['target']=cancer.target
+df.head()
+
+df['cancer class']=df.target.apply(lambda x: cancer.target_names[x])
+df.head()
+
+df0=df[df.target==0].head(50)
+df1=df[df.target==1].head(50)
+
+plt.xlabel('mean radius')                          #for analysing the dataset
+plt.ylabel('mean texture')
+plt.scatter(df0['mean radius'],df0['mean texture'],color='green',marker='*')
+plt.scatter(df1['mean radius'],df1['mean texture'],color='red',marker='+')
+
+x=df.drop(['target','cancer class'],axis='columns')
+y=df.target
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.25,random_state=5)
+
+from sklearn.svm import SVC
+model=SVC(C=2,kernel="linear")
+model.fit(x_train,y_train)
+
+y_predict=model.predict(x_test)
+y_predict
+
+from sklearn import metrics
+model.score(x_test,y_test)
+
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(y_test,y_predict)
+cm
+
+
+
